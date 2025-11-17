@@ -60,19 +60,20 @@ export class InvoiceAddInvoiceModal{
     this.visible = false;
     this.items = []; // limpa a lista de itens
     this.invoice = null;
-    this.newItem = { productCode: '', description: '', quantityAvailable: 0, quantityRequested: 1};
     this.errorMessage = null;
+    this.clearFields();
     this.close.emit();
   }
 
-    /** Limpa os campos do modal */
+    // Limpa os campos do modal
   clearFields() {
+    this.invoiceCreated = null;
     this.newItem.description = '';
     this.newItem.quantityAvailable = 0;
     this.newItem.quantityRequested = 1;
   }
 
-  /** Quando digitar o código, buscar produto */
+  //Quando digitar o código, buscar produto
   onProductCodeChange() {
     this.errorMessage = null;
 
@@ -103,7 +104,7 @@ export class InvoiceAddInvoiceModal{
     });
   }
 
-  /** Adicionar item à lista */
+  // Adicionar item à lista
   onAddItem() {
     this.errorMessage = null;
 
@@ -138,12 +139,12 @@ export class InvoiceAddInvoiceModal{
     };
   }
 
-  /** Remover item da lista */
+  //Remover item da lista
   removeItem(index: number) {
     this.items.splice(index, 1);
   }
 
-  /** Cancelar nota */
+  //Cancelar nota
   cancelInvoice(seqNumber: number | undefined) {
     if (!seqNumber) return;
 
@@ -159,7 +160,7 @@ export class InvoiceAddInvoiceModal{
     });
   }
 
-  /** Criar nota */
+  // Gerar nota
   onSave() {
     if (this.items.length === 0) {
       this.errorMessage = "Adicione pelo menos um item.";
@@ -181,6 +182,7 @@ export class InvoiceAddInvoiceModal{
     });
   }
 
+  // Carregar
   loadInvoice(invoiceNumber:number) {
     if (!invoiceNumber) return;
     this.invoiceService.getInvoice(invoiceNumber).subscribe({
@@ -191,6 +193,31 @@ export class InvoiceAddInvoiceModal{
       error: (err) => {
         console.error("Erro ao carregar nota:", err);
       }
+    });
+  }
+
+   //Imprimir e Fechar nota
+  printAndClose(seqNumber: number | undefined) {
+    if (!seqNumber) return;
+    this.invoiceService.closeAndPrint(seqNumber).subscribe({
+      next: (pdfBlob) => {
+        // Criar URL do Blob e abrir para download
+        const url = window.URL.createObjectURL(pdfBlob);
+        //Abrir em nova aba
+        window.open(url, '_blank');
+        this.loadInvoice(seqNumber);
+
+        // Download
+        //const a = document.createElement('a');
+        // a.href = url;
+        //a.download = `NF-${seqNumber}.pdf`;
+        //a.click();
+        //window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        console.error('Erro ao fechar e imprimir NF', err);
+        alert('Não foi possível gerar o PDF da NF.');
+      },
     });
   }
 }

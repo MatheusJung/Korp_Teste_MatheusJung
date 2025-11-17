@@ -1,4 +1,11 @@
-<a class="button" [href]="linkUrl">
-  <img [src]="imageUrl" alt="{{title}}">
-  <span>{{ title }}</span>
-</a>
+<div class="button-wrapper">
+
+    <div class="stamp" *ngIf="!online">
+      Fora de serviço
+    </div>
+
+  <a class="button" [class.disabled]="!online" [href]="linkUrl">
+    <img [src]="imageUrl" alt="{{title}}">
+    <span>{{ title }}</span>
+  </a>
+</div>

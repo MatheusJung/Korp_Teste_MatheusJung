@@ -4,14 +4,16 @@
       title="Produtos"
       linkUrl="/products"
       imageUrl="image/product_add.svg"
-      [class.disabled]="!productOnline">
+      [online]="productOnline">
     </app-button>
 
     <app-button
       title="Notas Fiscais"
       linkUrl="/invoice"
       imageUrl="image/invoice_add.svg"
-      [class.disabled]="!invoiceOnline">
+      [online]="invoiceOnline">
     </app-button>
+
+
 
 </div>

@@ -24,6 +24,7 @@ export class ProductAddStockModal implements OnChanges{
     quantityAvailable: 0,
     quantityRequested: 0,
     movementkey:'',
+    status:'',
     operationType:'Add'
   };
 
@@ -60,6 +61,7 @@ export class ProductAddStockModal implements OnChanges{
       quantityAvailable: 0,
       quantityRequested: 0,
       movementkey:'',
+      status:'',
       operationType: 'Add'
     };
     this.errorMessage = null;
@@ -73,6 +75,7 @@ export class ProductAddStockModal implements OnChanges{
         this.newItem.productCode = product.productCode;
         this.newItem.description = product.description;
         this.newItem.quantityAvailable = product.quantity;
+        this.newItem.status = product.status;
 
         this.productLoaded.emit(product);
         this.loading = false;
@@ -85,7 +88,7 @@ export class ProductAddStockModal implements OnChanges{
     });
   }
 
-  /** Busca produto pelo código ao digitar */
+  // Busca produto pelo código ao digitar
   onProductCodeChange() {
     const code = this.newItem.productCode.trim();
     if (!code) {
@@ -109,7 +112,7 @@ export class ProductAddStockModal implements OnChanges{
     });
   }
 
-/** Salvar movimentação no estoque */
+// Salvar movimentação no estoque
 onRegisterStockMovement() {
   if (!this.newItem.productCode || !this.newItem.description) {
     this.errorMessage = 'Preencha todos os campos obrigatórios.';
@@ -138,7 +141,7 @@ onRegisterStockMovement() {
       request$ = this.productService.addStock({
         productCode: this.newItem.productCode,
         quantity: this.newItem.quantityRequested,
-        operationKey: `${Date.now()}`
+        operationKey: `IN-ITEM-${this.newItem.productCode}-QTY-${this.newItem.quantityRequested}-AT-${Date.now()}`
       });
       break;
 
@@ -146,7 +149,7 @@ onRegisterStockMovement() {
       request$ = this.productService.removeStock({
         productCode: this.newItem.productCode,
         quantity: this.newItem.quantityRequested,
-        operationKey: `${Date.now()}`
+        operationKey: `OUT-ITEM-${this.newItem.productCode}-QTY-${this.newItem.quantityRequested}-AT-${Date.now()}`
       });
       break;
 

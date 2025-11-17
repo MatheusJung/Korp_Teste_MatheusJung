@@ -1,6 +1,11 @@
 // Variables
 @use 'variables' as vars;
 
+.button-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
 .button {
   height: 110px;
   width: 110px;
@@ -41,3 +46,34 @@
     color: white;
   }
 }
+
+  .disabled {
+    opacity: 0.4;
+    pointer-events: none;
+    text-decoration: none;
+    cursor: not-allowed;
+    filter: grayscale(50%);
+}
+
+.stamp {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-35deg); // inclinação invertida
+  background: rgba(255, 0, 0, 0.85);
+  color: white;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: bold;
+  border-radius: 3px;
+  text-transform: uppercase;
+  pointer-events: none;
+  z-index: 1000;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.3);
+  white-space: nowrap;
+  text-align: center;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+

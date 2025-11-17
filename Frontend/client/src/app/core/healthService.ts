@@ -1,36 +1,36 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { catchError, map, retry, timeout, shareReplay } from 'rxjs/operators';
+import { Observable, of, interval } from 'rxjs';
+import { catchError, map, retry, timeout, startWith, switchMap} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HealthService {
-  // Cache por URL
-  private cacheMap: Map<string, Observable<boolean>> = new Map();
+
 
   constructor(private http: HttpClient) {}
 
-  getServiceStatus(healthUrl: string, cacheMs: number = 5000): Observable<boolean> {
-    // Retorna cache se existir
-    if (this.cacheMap.has(healthUrl)) {
-      return this.cacheMap.get(healthUrl)!;
-    }
+getServiceStatus(healthUrl: string): Observable<boolean> {
+  return this.http.get(healthUrl).pipe(
+    timeout(3000),       // timeout de 3s
+    retry(2),            // tenta 2 vezes em caso de falha
+    map(() => true),     // sucesso = online
+    catchError(() => of(false)) // falha = offline
+  );
+}
 
-    const status$ = this.http.get(healthUrl).pipe(
-      timeout(3000),  // 3s timeout
-      retry(2),       // 2 tentativas
-      map(() => true), // sucesso = online
-      catchError(() => of(false)), // falha = offline
-      shareReplay(1)
+getServiceStatusPoll(healthUrl: string, intervalMs: number = 3000): Observable<boolean> {
+    return interval(intervalMs).pipe(
+      startWith(0), // dispara imediatamente
+      switchMap(() =>
+        this.http.get(healthUrl).pipe(
+          timeout(3000),
+          retry(2),
+          map(() => true),
+          catchError(() => of(false))
+        )
+      )
     );
-
-    this.cacheMap.set(healthUrl, status$);
-
-    // Limpa o cache após cacheMs
-    setTimeout(() => this.cacheMap.delete(healthUrl), cacheMs);
-
-    return status$;
   }
 }

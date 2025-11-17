@@ -13,7 +13,7 @@ export class InvoiceOnlineGuard implements CanActivate {
   ) {}
 
  canActivate(): Observable<boolean> {
-    return this.healthService.getServiceStatus(`${environment.billingServiceUrl}/health`, 1000)
+    return this.healthService.getServiceStatus(`${environment.billingServiceUrl}/health`)
       .pipe(
         timeout(2000),
         tap(isOnline => console.log('Invoice Guard: serviço online?', isOnline)),

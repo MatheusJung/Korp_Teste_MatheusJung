@@ -70,7 +70,7 @@
 
     <div class="actions">
       <button (click)="onCloseModal()">Cancelar</button>
-      <button (click)="onRegisterStockMovement()" [disabled]="loading">
+      <button (click)="onRegisterStockMovement()" [disabled]="newItem.status === 'False'">
         Realizar movimentação
       </button>
 

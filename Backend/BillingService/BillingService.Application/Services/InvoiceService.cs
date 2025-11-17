@@ -51,7 +51,7 @@ namespace BillingService.Application.Services
                 foreach (var itemDto in items)
                 {
                     // Gera operation key determinística para o estoque
-                    string operationKey = $"INV-{sequentialNumber}-ITEM-{itemDto.ProductCode}";
+                    string operationKey = $"INV-{sequentialNumber}-ITEM-{itemDto.ProductCode}-QTY-{itemDto.Quantity}";
 
                     // Ajusta o estoque (débito)
                     await _inventoryClient.AdjustStockAsync(itemDto.ProductCode, -itemDto.Quantity, operationKey);
@@ -97,7 +97,7 @@ namespace BillingService.Application.Services
                 throw new InsufficientStockException(product.ProductCode, quantity, product.Quantity);
 
             // Gera operation key determinística
-            string operationKey = $"INV-{sequentialNumber}-ITEM-{product.ProductCode}-{quantity}";
+            string operationKey = $"INV-{sequentialNumber}-ITEM-{product.ProductCode}-QTY-{quantity}";
 
             // Ajusta o estoque (débito da quantidade do pedido)
             await _inventoryClient.AdjustStockAsync(product.ProductCode, -quantity, operationKey);
@@ -114,24 +114,29 @@ namespace BillingService.Application.Services
         public async Task CancelAsync(int sequentialNumber)
         {
             var invoice = await _invoiceRepo.GetBySequentialNumberAsync(sequentialNumber)
-                          ?? throw new InvoiceNotFoundException(sequentialNumber);
+                           ?? throw new InvoiceNotFoundException(sequentialNumber);
+
             if (invoice.Status == InvoiceStatus.Fechada)
                 throw new InvoiceAlreadyClosedException(sequentialNumber);
+
             if (invoice.Status == InvoiceStatus.Cancelada)
                 throw new InvoiceAlreadyCanceledException(sequentialNumber);
 
             foreach (var item in invoice.Items)
             {
+                var description = $"INV-CANCEL-{sequentialNumber}-ITEM-{item.ProductCode}-QTY-{item.Quantity}";
+
                 await _inventoryClient.AdjustStockAsync(
-                    item.ProductCode, 
-                    item.Quantity, 
-                    $"INV-{invoice.SequentialNumber}-CANCEL-{item.ProductCode}"
+                    item.ProductCode,
+                    item.Quantity,
+                    description
                 );
             }
 
             invoice.Cancel();
             await _invoiceRepo.UpdateAsync(invoice);
         }
+
 
         // Remover item de nota aberta
         public async Task RemoveItemAsync(int sequentialNumber, string productCode)

@@ -71,20 +71,15 @@
     </div>
 
     <div class="actions">
+      <button (click)="onCloseModal()">Voltar</button>
       @if(invoiceCreated?.sequentialNumber === null){
-        <button (click)="onAddItem()">Adicionar</button>
-        <button (click)="onSave()"[disabled]="items.length === 0">
-          Salvar
-        </button>
+        <button (click)="onAddItem()">Adicionar Item</button>
+        <button (click)="onSave()"[disabled]="items.length === 0">Gerar NFe</button>
       }@else{
-        <button (click)="onCloseModal()">Voltar</button>
-        <button
-          (click)="cancelInvoice(invoiceCreated?.sequentialNumber)"
-          [disabled]="items.length === 0">
-        Cancelar
-      </button>
+        <button (click)="cancelInvoice(invoiceCreated?.sequentialNumber)"[disabled]="items.length === 0">Cancelar NFe</button>
+        <button (click)="printAndClose(invoiceCreated?.sequentialNumber)"[disabled]="items.length === 0">Imprimir NFe</button>
       }
-
     </div>
 </div>
+
 

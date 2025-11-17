@@ -88,7 +88,6 @@ export class InvoiceViewModal implements OnChanges {
     }
   }
 
-  //Cancelar nota
   cancelInvoice(seqNumber: number | null | undefined) {
   if (!seqNumber) {
     console.warn('Número da nota inválido');
@@ -96,10 +95,9 @@ export class InvoiceViewModal implements OnChanges {
   }
 
   this.invoiceService.cancelInvoice(seqNumber).subscribe({
-    next: (updatedInvoice) => {
-      // Atualiza a nota no modal ou na lista, se necessário
-      this.invoice = updatedInvoice;
-      this.updateButtonStates(updatedInvoice.status);
+    next: () => {
+      // Após cancelar, recarrega a nota do backend
+      this.loadInvoice();
     },
     error: (err) => console.error('Erro ao cancelar nota', err),
   });
