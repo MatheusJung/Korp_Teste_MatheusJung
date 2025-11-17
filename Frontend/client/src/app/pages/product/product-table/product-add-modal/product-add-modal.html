@@ -1,0 +1,36 @@
+<div class="modal-backdrop" *ngIf="visible">
+  <div class="modal">
+    <div class="header">
+      <h3>Cadastrar novo produto</h3>
+      <button class="close-btn" (click)="onCloseModal()">×</button>
+    </div>
+
+    <div class="form">
+      <label>
+        Código do Produto:
+        <input [(ngModel)]="newItem.productCode" placeholder="Código" required />
+      </label>
+
+      <label>
+        Descrição do Produto:
+        <input [(ngModel)]="newItem.description" placeholder="Descrição" required />
+      </label>
+
+      <label>
+        Quantidade:
+        <input type="number" [(ngModel)]="newItem.quantity" min="0" required />
+      </label>
+    </div>
+
+    <div class="error-container">
+      <div *ngIf="errorMessage" class="error-box">
+        {{ errorMessage }}
+      </div>
+    </div>
+
+    <div class="actions">
+      <button (click)="onCloseModal()">Cancelar</button>
+      <button (click)="onRegisterNewProduct()">Cadastrar</button>
+    </div>
+  </div>
+</div>

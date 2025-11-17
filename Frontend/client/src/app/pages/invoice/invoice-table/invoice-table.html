@@ -1,0 +1,67 @@
+<div class="invoice-table">
+  <h2>Notas Fiscais</h2>
+  <button (click)="openAddInvoiceModal()">Cadastrar nova nota fiscal</button>
+
+  <div *ngIf="isLoading" class="loading">Carregando...</div>
+
+  <table *ngIf="!isLoading && pagedInvoices">
+    <thead>
+      <tr>
+        <th>NFe</th>
+        <th>Criada em</th>
+        <th>Itens</th>
+        <th>Status</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let inv of pagedInvoices.items">
+        <td>{{ inv.sequentialNumber }}</td>
+        <td>{{ inv.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+        <td>{{ inv.items.length }}</td>
+        <td>
+          <span
+            [class.fechada]="inv.status === 'Fechada'"
+            [class.cancelada]="inv.status === 'Cancelada'">
+            {{ inv.status }}
+          </span>
+        <td>
+          <button (click)="openViewModal(inv.sequentialNumber)">Detalhes</button>
+          <button (click)="printAndClose(inv.sequentialNumber)"
+            [disabled]="!isPrintable(inv.status)">
+            Imprimir
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!isLoading && pagedInvoices" class="pagination">
+    <button (click)="prevPage()" [disabled]="pageNumber === 1">Anterior</button>
+      <span>Página {{ pageNumber }} de {{ pagedInvoices.totalPages || 1 }}</span>
+    <button (click)="nextPage()" [disabled]="pageNumber === pagedInvoices.totalPages">Próxima</button>
+
+    <label>
+      Itens por página:
+      <select [(ngModel)]="pageSize" (change)="changePageSize(pageSize)">
+        <option [value]="5">5</option>
+        <option [value]="10">10</option>
+        <option [value]="20">20</option>
+      </select>
+    </label>
+
+    <span>Total: {{ pagedInvoices.totalItems }}</span>
+  </div>
+
+<app-invoice-view-modal
+  [visible]="modalViewVisible"
+  [invoiceNumber]="selectedInvoice"
+  (close)="closeViewModal(selectedInvoice)"
+  (invoiceLoaded)="onInvoiceLoaded($event)">
+</app-invoice-view-modal>
+
+<app-invoice-add-Invoice-modal
+  [visible]="modalAddInvoiceVisible"
+  (close)="closeAddInvoiceModal()">
+</app-invoice-add-Invoice-modal>
+</div>

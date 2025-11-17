@@ -1,0 +1,43 @@
+// Variables
+@use 'variables' as vars;
+
+.button {
+  height: 110px;
+  width: 110px;
+  margin: 5px;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 16px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: vars.$secondary-color;
+  color: vars.$text-color;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-align: center;
+
+  img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  span {
+    text-align: center;
+    width: 90%;
+    font-size: 16px;
+    line-height: 1.0;     /* controla altura da linha */
+    min-height: 2.1em;    /* garante altura mínima mesmo com 1 linha */
+    word-wrap: break-word;
+  }
+
+  &:hover {
+    background-color: vars.$hover-color;
+    transform: scale(1.1);
+    color: white;
+  }
+}

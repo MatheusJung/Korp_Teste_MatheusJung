@@ -1,0 +1,27 @@
+<div class="container">
+  <header>
+    <app-topbar (toggleSidebar)="handleToggleSidebar()"></app-topbar>
+  </header>
+
+   <div class="content">
+
+    <aside class="sidebar">
+      <app-sidebar [isOpen]="sidebarOpen"></app-sidebar>
+    </aside>
+
+    <main>
+
+        <h2>Bem-vindo</h2>
+        <h4>Selecione entre as opções abaixo:</h4>
+
+        <div class="menu-options">
+          <app-menu-options></app-menu-options>
+        </div>
+
+    </main>
+  </div>
+
+  <footer>
+    <app-footer></app-footer>
+  </footer>
+</div>

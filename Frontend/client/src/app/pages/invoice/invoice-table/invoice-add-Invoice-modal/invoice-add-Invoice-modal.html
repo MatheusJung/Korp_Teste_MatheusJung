@@ -1,0 +1,90 @@
+<div class="modal-backdrop" *ngIf="visible">
+  <div class="modal">
+    <div class="header">
+      <h3>Cadastrar nova nota fiscal</h3>
+      <button class="close-btn" (click)="onCloseModal()">×</button>
+    </div>
+
+    <h4>Dados da NFe</h4>
+    <div class="nf-header">
+      <label>Número da NF
+        <input type="text" [value]="invoiceCreated?.sequentialNumber || ''" readonly>
+      </label>
+
+      <label>Data
+        <input type="text" [value]="invoiceCreated ? (invoiceCreated.createdAt | date:'dd/MM/yyyy HH:mm') : ''" readonly>
+      </label>
+
+      <label>Status
+        <input type="text" [value]="invoiceCreated?.status || ''" readonly>
+      </label>
+    </div>
+
+    <h4>Adicionar item a lista</h4>
+      <div class="form">
+        <label>Código do Produto
+          <input [(ngModel)]="newItem.productCode"(ngModelChange)="onProductCodeChange()"
+          placeholder="Código"required/>
+        </label>
+      <label>Descrição do Produto
+        <input [(ngModel)]="newItem.description"placeholder="Descrição"readonly />
+      </label>
+      <label>
+        Disponível
+        <input type="number" [(ngModel)]="newItem.quantityAvailable" readonly />
+      </label>
+      <label>
+        Solicitar
+        <input
+          type="number"
+          [(ngModel)]="newItem.quantityRequested"
+          [max]="newItem.quantityAvailable"
+          min="1"
+          required/>
+      </label>
+    </div>
+
+    <div class="error-container">
+      <div *ngIf="errorMessage" class="error-box">
+        {{ errorMessage }}
+      </div>
+    </div>
+
+    <div class="table" *ngIf="items.length > 0">
+      <h4>Itens Adicionados</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Descrição</th>
+            <th>Quantidade</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of items; let i = index">
+            <td>{{ item.productCode }}</td>
+            <td>{{ item.description }}</td>
+            <td>{{ item.quantity }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="actions">
+      @if(invoiceCreated?.sequentialNumber === null){
+        <button (click)="onAddItem()">Adicionar</button>
+        <button (click)="onSave()"[disabled]="items.length === 0">
+          Salvar
+        </button>
+      }@else{
+        <button (click)="onCloseModal()">Voltar</button>
+        <button
+          (click)="cancelInvoice(invoiceCreated?.sequentialNumber)"
+          [disabled]="items.length === 0">
+        Cancelar
+      </button>
+      }
+
+    </div>
+</div>
+

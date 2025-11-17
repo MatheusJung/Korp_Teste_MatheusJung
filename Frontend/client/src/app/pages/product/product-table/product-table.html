@@ -1,0 +1,79 @@
+<div class="product-table">
+  <h2>Produtos</h2>
+
+  <button (click)="openAddModal()">Cadastrar novo item</button>
+
+  <div *ngIf="isLoading" class="loading">Carregando...</div>
+
+  <div class="table-wrapper">
+    <table *ngIf="!isLoading">
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Descrição</th>
+          <th>Estoque</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let product of pagedProducts?.items">
+          <td>{{ product.productCode }}</td>
+          <td>{{ product.description }}</td>
+          <td>{{ product.quantity }}</td>
+          <td>
+            <span
+[class.desativado]="product.status === 'False'">
+              {{ product.status === 'True' ? 'Ativado' : 'Desativado' }}
+            </span>
+          </td>
+
+          <td class="actions">
+            <button
+              (click)="openAddStockModal(product.productCode)">
+                Movimentar
+            </button>
+            <button
+              (click)="deactivateProduct(product.productCode)"
+              [disabled]="!isActivated(product.status)">
+                Desativar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!isLoading && pagedProducts" class="pagination">
+    <button (click)="prevPage()" [disabled]="pageNumber === 1">Anterior</button>
+    <span>
+      Página {{ pageNumber }} de {{ pagedProducts.totalPages || 1 }}
+    </span>
+    <button (click)="nextPage()" [disabled]="pageNumber === pagedProducts.totalPages">
+      Próxima
+    </button>
+
+    <label>
+      Itens por página:
+      <select [(ngModel)]="pageSize" (change)="changePageSize(pageSize)">
+        <option [value]="5">5</option>
+        <option [value]="10">10</option>
+        <option [value]="20">20</option>
+      </select>
+    </label>
+
+    <span>Total: {{ pagedProducts.totalItems }}</span>
+  </div>
+
+  <app-product-add-modal
+    [visible]="modalAddVisible"
+    (close)="closeAddModal()">
+  </app-product-add-modal>
+
+  <app-product-add-stock-modal
+    [visible]="modalAddStockVisible"
+    [productCode]="selectedProduct"
+    (close)="closeAddStockModal(selectedProduct)">
+  </app-product-add-stock-modal>
+</div>

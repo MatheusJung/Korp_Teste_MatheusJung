@@ -1,0 +1,17 @@
+<div class="menu-options">
+
+    <app-button
+      title="Produtos"
+      linkUrl="/products"
+      imageUrl="image/product_add.svg"
+      [class.disabled]="!productOnline">
+    </app-button>
+
+    <app-button
+      title="Notas Fiscais"
+      linkUrl="/invoice"
+      imageUrl="image/invoice_add.svg"
+      [class.disabled]="!invoiceOnline">
+    </app-button>
+
+</div>

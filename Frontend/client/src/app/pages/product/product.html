@@ -1,0 +1,20 @@
+<div class="container">
+  <header>
+     <app-topbar (toggleSidebar)="handleToggleSidebar()"></app-topbar>
+  </header>
+
+   <div class="content">
+
+    <aside class="sidebar">
+      <app-sidebar [isOpen]="sidebarOpen"></app-sidebar>
+    </aside>
+
+    <main>
+      <app-product-table></app-product-table>
+    </main>
+  </div>
+
+  <footer>
+    <app-footer></app-footer>
+  </footer>
+</div>

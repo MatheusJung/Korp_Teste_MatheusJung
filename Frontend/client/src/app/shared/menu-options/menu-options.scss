@@ -1,0 +1,11 @@
+.menu-options{
+  justify-content: center;
+  align-items: center;
+
+  .disabled {
+    opacity: 0.4;
+    pointer-events: none;
+    text-decoration: none;
+    filter: grayscale(50%);
+  }
+}

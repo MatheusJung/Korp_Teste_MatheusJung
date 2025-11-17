@@ -1,0 +1,30 @@
+// Variables
+@use 'variables' as vars;
+
+$width:250px;
+$topbar_height:60px;
+
+.sidebar {
+  background-color: vars.$secondary-color;
+  height: 100%;
+  width: $width;
+  max-width: $width;
+  position: fixed;
+  top: $topbar_height;
+  left: -$width;
+  transition: left 0.3s ease;
+  z-index: 1000;
+   overflow-x: auto;
+
+   .menu-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding: 5px;
+    box-sizing: border-box;
+  }
+}
+
+.sidebar.open {
+  left: 0;
+}

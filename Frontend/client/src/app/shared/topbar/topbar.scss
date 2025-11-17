@@ -1,0 +1,58 @@
+// Variables
+@use 'variables' as vars;
+$height: 60px;
+
+// Topbar container
+.top-bar {
+  background-color: vars.$primary-color;
+  color: white;
+  height: $height;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+    .toogle{
+      border-radius: 20%;
+      padding: 5px;
+
+      transition: background-color 0.5s ease;
+
+      button{
+        color: white;
+      }
+
+      &:hover {
+      transform: scale(1.1);
+
+      button{
+        cursor: pointer;
+      }
+    }
+  }
+
+  // Logo section
+  .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  // Navigation links
+  .nav-links {
+    display: flex;
+    gap: 20px;
+
+    a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: white;
+      }
+    }
+  }
+}
+

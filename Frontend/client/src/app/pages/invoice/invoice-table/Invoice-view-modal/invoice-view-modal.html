@@ -1,0 +1,55 @@
+<div class="modal-backdrop" *ngIf="visible">
+  <div class="modal">
+    <div class="header">
+      <h3>Detalhes da Nota #{{ invoiceNumber }}</h3>
+      <button class="close-btn" (click)="onClose()">×</button>
+    </div>
+
+    <div *ngIf="loading" class="loading">Carregando...</div>
+
+    <div *ngIf="!loading && invoice">
+      <div class="invoice-info">
+        <p><strong>Status:</strong> {{ invoice.status }}</p>
+        <p><strong>Data:</strong> {{ invoice.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
+        <p><strong>Total de Itens:</strong> {{ invoice.items.length }}</p>
+      </div>
+
+      <h4>Itens:</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Descrição</th>
+            <th>Quantidade</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of invoice.items">
+            <td>{{ item.productCode }}</td>
+            <td>{{ item.description }}</td>
+            <td>{{ item.quantity }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="error-container">
+      <div *ngIf="errorMessage" class="error-box">
+        {{ errorMessage }}
+      </div>
+    </div>
+
+    <div class="actions">
+      <button (click)="openAddItemModal()"[disabled]="!canAddItem">Adicionar Item</button>
+      <button (click)="cancelInvoice(invoiceNumber!)" [disabled]="!canCancel">Cancelar Nota</button>
+      <button (click)="printAndClose(invoiceNumber!)" [disabled]="!canPrint">Imprimir Nota</button>
+    </div>
+  </div>
+</div>
+
+<app-invoice-add-item-modal
+  [visible]="addItemModalVisible"
+  [invoiceNumber]="invoiceNumber"
+  (close)="closeAddItemModal()"
+  (itemAdded)="onItemAdded()">
+</app-invoice-add-item-modal>

@@ -1,0 +1,43 @@
+<div class="modal-backdrop" *ngIf="visible">
+  <div class="modal" *ngIf="visible">
+    <div class="header">
+      <h3>Cadastrar nova nota fiscal</h3>
+      <button class="close-btn" (click)="onCloseModal()">×</button>
+    </div>
+
+      <div class="form">
+        <label>Código do Produto:
+          <input [(ngModel)]="newItem.productCode"(ngModelChange)="onProductCodeChange()"
+          placeholder="Código"required/>
+        </label>
+      <label>Descrição do Produto:
+        <input [(ngModel)]="newItem.description"placeholder="Descrição"readonly />
+      </label>
+      <label>
+        Disponível:
+        <input type="number" [(ngModel)]="newItem.quantityAvailable" readonly />
+      </label>
+      <label>
+        Solicitar:
+        <input
+          type="number"
+          [(ngModel)]="newItem.quantityRequested"
+          [max]="newItem.quantityAvailable"
+          min="1"
+          required/>
+      </label>
+    </div>
+
+    <div class="error-container">
+      <div *ngIf="errorMessage" class="error-box">
+        {{ errorMessage }}
+      </div>
+    </div>
+
+
+    <div class="actions">
+      <button (click)="onCloseModal()">Cancelar</button>
+      <button (click)="onAddItem()">Adicionar</button>
+    </div>
+  </div>
+</div>

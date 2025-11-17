@@ -1,0 +1,36 @@
+// Variables
+@use 'variables' as vars;
+
+$topbar-height: 60px;
+$sidebar-width: 160px;
+$footer-height: 40px;
+
+.container{
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+
+  .content {
+  display: flex;
+  flex: 1;
+
+    main{
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    width: 100%;
+    overflow-y: auto;
+    text-align: center;
+    align-items: center;
+
+      .menu-options{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+        width: 80%;
+        padding: 5px;
+      }
+    }
+  }
+}
