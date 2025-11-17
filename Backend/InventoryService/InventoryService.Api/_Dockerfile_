@@ -1,0 +1,30 @@
+# Build stage
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Copiar os projetos
+COPY ["InventoryService.Api/InventoryService.Api.csproj", "InventoryService.Api/"]
+COPY ["InventoryService.Application/InventoryService.Application.csproj", "InventoryService.Application/"]
+COPY ["InventoryService.Infrastructure/InventoryService.Infrastructure.csproj", "InventoryService.Infrastructure/"]
+COPY ["InventoryService.Domain/InventoryService.Domain.csproj", "InventoryService.Domain/"]
+
+# Restaurar pacotes
+RUN dotnet restore "InventoryService.Api/InventoryService.Api.csproj"
+
+# Copiar todo o código
+COPY . .
+
+WORKDIR "/src/InventoryService.Api"
+RUN dotnet build "InventoryService.Api.csproj" -c Release -o /app/build
+
+# Publish stage
+FROM build AS publish
+RUN dotnet publish "InventoryService.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+# Runtime stage
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+
+EXPOSE 5001
+ENTRYPOINT ["dotnet", "InventoryService.Api.dll"]

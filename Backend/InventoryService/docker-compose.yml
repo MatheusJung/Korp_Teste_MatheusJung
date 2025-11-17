@@ -1,0 +1,43 @@
+services:
+  inventoryservice:
+    image: inventory-api
+    container_name: inventory-api
+    build:
+      context: .
+      dockerfile: InventoryService.Api/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - ASPNETCORE_URLS=http://+:5001
+      - ConnectionStrings__Default=Host=postgres;Port=5432;Database=inventorydb;Username=postgres;Password=postgres
+    ports:
+      - "5001:5001"
+    networks:
+    - microservices-net
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: inventorydb
+    ports:
+      - "5432:5432"
+    networks:
+      - microservices-net
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    
+
+networks:
+  microservices-net:
+    external: true
+
+volumes:
+  pgdata:
