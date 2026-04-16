@@ -1,0 +1,199 @@
+<!-- Toolbar -->
+<div class="page-header">
+  <div class="header-left">
+    <h2>Notas Fiscais</h2>
+    <p class="text-muted text-sm mt-2">
+      {{ totalItems() }} notas(s) lançada(s)
+    </p>
+  </div>
+
+  <div class="header-center">
+    <div class="search-bar">
+      <input
+        type="text"
+        placeholder="Buscar por numero de nota"
+        [value]="searchInput()"
+        (input)="searchInput.set($any($event.target).value)"
+        (keyup.enter)="pesquisar()"
+      />
+
+      <button
+        type="button"
+        class="search-button"
+        (click)="pesquisar()"
+        [disabled]="carregando()"
+        title="Pesquisar"
+      >
+        <svg
+          xmlns="http://w3.org"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <button
+      class="btn btn--primary"
+      (click)="modalCriar.set(true)"
+      [disabled]="health().faturamento !== 'ok'"
+      [title]="
+        health().faturamento !== 'ok'
+          ? 'Serviço de faturamento indisponível'
+          : ''
+      "
+    >
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+      >
+        <line x1="12" y1="5" x2="12" y2="19" />
+        <line x1="5" y1="12" x2="19" y2="12" />
+      </svg>
+      Nova Nota
+    </button>
+  </div>
+</div>
+
+<!-- Tabela -->
+<div class="card table-card">
+  @if (carregando()) {
+    <div class="empty-state">Carregando...</div>
+  } @else if (notas().length === 0) {
+    <div class="empty-state">Nenhuma nota emitida ainda.</div>
+  } @else {
+    <table class="table">
+      <thead>
+        <tr>
+          <th class="sortable" (click)="ordenarPor('numero')">
+            #
+            @if (sortBy() === "numero") {
+              <span class="sort-indicator">
+                {{ sortDirection() === "asc" ? "▲" : "▼" }}
+              </span>
+            }
+          </th>
+          <th class="sortable" (click)="ordenarPor('status')">
+            Status
+            @if (sortBy() === "status") {
+              <span class="sort-indicator">
+                {{ sortDirection() === "asc" ? "▲" : "▼" }}
+              </span>
+            }
+          </th>
+          <th class="text-right">Itens</th>
+          <th class="sortable" (click)="ordenarPor('criado_em')">
+            Criado Em
+            @if (sortBy() === "criado_em") {
+              <span class="sort-indicator">
+                {{ sortDirection() === "asc" ? "▲" : "▼" }}
+              </span>
+            }
+          </th>
+          <th class="text-right">Ações</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (n of notas(); track n.id) {
+          <tr>
+            <td>
+              <span class="text-mono">
+                {{ formatarNumeroNota(n.numero) }}
+              </span>
+            </td>
+
+            <td>
+              <span
+                class="badge"
+                [class]="'badge badge--' + n.status.toLowerCase()"
+              >
+                {{ n.status }}
+              </span>
+            </td>
+
+            <td class="text-right text-muted">
+              {{ n.itens.length }}
+            </td>
+
+            <td class="text-muted text-sm">
+              {{ n.criadoEm | date: "dd/MM/yy HH:mm" }}
+            </td>
+
+            <td class="text-right actions">
+              <button class="btn btn--ghost btn--sm" (click)="verDetalhe(n)">
+                Detalhes
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    <!-- Paginação -->
+    <div class="pagination-wrap">
+      <div class="pagination">
+        <button
+          class="btn btn--secondary btn--sm"
+          (click)="paginaAnterior()"
+          [disabled]="page() <= 1 || carregando()"
+        >
+          Anterior
+        </button>
+
+        <div class="pagination-info text-sm text-muted">
+          Página {{ page() }} de {{ totalPages() || 1 }}
+        </div>
+
+        <button
+          class="btn btn--secondary btn--sm"
+          (click)="proximaPagina()"
+          [disabled]="page() >= totalPages() || carregando()"
+        >
+          Próxima
+        </button>
+      </div>
+    </div>
+  }
+</div>
+
+<!-- Banner processando -->
+@if (notaProcessando()) {
+  <div class="processing-banner">
+    <div class="spinner"></div>
+    <span>
+      Nota <strong>#{{ notaProcessando()!.numero }}</strong>
+      em processamento — aguardando dedução do estoque...
+    </span>
+  </div>
+}
+
+<!-- Modal: Criar -->
+@if (modalCriar()) {
+  <app-modal-criar-nota
+    (notaCriada)="onNotaCriada($event)"
+    (fechado)="fecharTudo()"
+  />
+}
+
+<!-- Modal: Detalhes -->
+@if (modalDetalhe() && notaDetalhe()) {
+  <app-modal-detalhes-nota
+    [nota]="notaDetalhe()!"
+    (fechado)="fecharTudo()"
+    (impressaoIniciada)="onImpressaoIniciada($event)"
+  />
+}

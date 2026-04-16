@@ -1,0 +1,211 @@
+<!-- Toolbar -->
+<div class="page-header">
+  <div class="header-left">
+    <h2>Produtos</h2>
+    <p class="text-muted text-sm mt-2">
+      {{ totalItems() }} produto(s) cadastrado(s)
+    </p>
+  </div>
+
+  <div class="header-center">
+    <div class="search-bar">
+      <input
+        type="text"
+        placeholder="Buscar por código ou descrição"
+        [value]="searchInput()"
+        (input)="searchInput.set($any($event.target).value)"
+        (keyup.enter)="pesquisar()"
+      />
+
+      <button
+        type="button"
+        class="search-button"
+        (click)="pesquisar()"
+        [disabled]="carregando()"
+        title="Pesquisar"
+      >
+        <svg
+          xmlns="http://w3.org"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <button
+      class="btn btn--primary"
+      (click)="abrirModalCadastro()"
+      [disabled]="health().estoque !== 'ok'"
+      [title]="
+        health().estoque !== 'ok' ? 'Serviço de estoque indisponível' : ''
+      "
+    >
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+      >
+        <line x1="12" y1="5" x2="12" y2="19" />
+        <line x1="5" y1="12" x2="19" y2="12" />
+      </svg>
+      Novo Produto
+    </button>
+  </div>
+</div>
+
+<!-- Tabela -->
+<div class="card table-card">
+  @if (carregando()) {
+    <div class="empty-state">Carregando...</div>
+  } @else if (produtos().length === 0) {
+    <div class="empty-state">Nenhum produto encontrado.</div>
+  } @else {
+    <table class="table">
+      <thead>
+        <tr>
+          <th class="sortable" (click)="ordenarPor('codigo')">
+            Código
+            @if (sortBy() === "codigo") {
+              <span class="sort-indicator">
+                {{ sortDirection() === "asc" ? "▲" : "▼" }}
+              </span>
+            }
+          </th>
+
+          <th class="sortable" (click)="ordenarPor('descricao')">
+            Descrição
+            @if (sortBy() === "descricao") {
+              <span class="sort-indicator">
+                {{ sortDirection() === "asc" ? "▲" : "▼" }}
+              </span>
+            }
+          </th>
+
+          <th class="text-right sortable" (click)="ordenarPor('saldo')">
+            Saldo
+            @if (sortBy() === "saldo") {
+              <span class="sort-indicator">
+                {{ sortDirection() === "asc" ? "▲" : "▼" }}
+              </span>
+            }
+          </th>
+
+          <th>Ações</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (p of produtos(); track p.id) {
+          <tr>
+            <td>
+              <span class="text-mono">{{ p.codigo }}</span>
+            </td>
+            <td>{{ p.descricao }}</td>
+            <td>
+              <span
+                [class]="
+                  p.saldo === 0
+                    ? 'badge badge--cancelada'
+                    : 'badge badge--fechada'
+                "
+              >
+                {{ p.saldo | number: "1.0-2" }}
+              </span>
+            </td>
+            <td class="acoes-cell">
+              <button
+                class="btn btn--secondary btn--sm"
+                (click)="abrirMovimentacoes(p)"
+              >
+                Histórico
+              </button>
+
+              <button
+                class="btn btn--secondary btn--sm"
+                [disabled]="health().estoque !== 'ok'"
+                [title]="
+                  health().estoque !== 'ok'
+                    ? 'Serviço de estoque indisponível'
+                    : ''
+                "
+                (click)="abrirEntrada(p)"
+              >
+                + Entrada
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <!-- Paginação -->
+    <div class="pagination-wrap">
+      <div class="pagination">
+        <button
+          class="btn btn--secondary btn--sm"
+          (click)="paginaAnterior()"
+          [disabled]="page() <= 1 || carregando()"
+        >
+          Anterior
+        </button>
+
+        <div class="pagination-info text-sm text-muted">
+          Página {{ page() }} de {{ totalPages() || 1 }}
+        </div>
+
+        <button
+          class="btn btn--secondary btn--sm"
+          (click)="proximaPagina()"
+          [disabled]="page() >= totalPages() || carregando()"
+        >
+          Próxima
+        </button>
+      </div>
+    </div>
+  }
+</div>
+
+<!-- Modal: Cadastro -->
+@if (modalCadastro()) {
+  <app-modal-cadastro-produto
+    [salvando]="salvando()"
+    [erro]="erro()"
+    (fechar)="fecharTudo()"
+    (salvar)="salvarProdutoFilho($event)"
+  />
+}
+
+<!-- Modal: Entrada -->
+@if (modalEntrada()) {
+  <app-modal-entrada-produto
+    [produto]="produtoSelecionado()"
+    [salvando]="salvando()"
+    [erro]="erro()"
+    (fechar)="fecharTudo()"
+    (salvar)="salvarEntradaFilho($event)"
+  />
+}
+
+<!-- Modal: Histórico -->
+@if (modalHistorico()) {
+  <app-modal-historico-produto
+    [produto]="produtoSelecionado()"
+    [movimentacoes]="movimentacoes()"
+    [carregando]="carregandoHistorico()"
+    (fecharModal)="fecharTudo()"
+  />
+}

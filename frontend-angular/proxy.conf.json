@@ -1,0 +1,24 @@
+{
+  "/api/estoque": {
+    "target": "http://localhost:5001",
+    "secure": false,
+    "pathRewrite": { "^/api/estoque": "/api" },
+    "logLevel": "info"
+  },
+  "/api/faturamento": {
+    "target": "http://localhost:5002",
+    "secure": false,
+    "pathRewrite": { "^/api/faturamento": "/api" },
+    "logLevel": "info"
+  },
+  "/health/estoque": {
+    "target": "http://localhost:5001",
+    "secure": false,
+    "pathRewrite": { "^/health/estoque": "/health" }
+  },
+  "/health/faturamento": {
+    "target": "http://localhost:5002",
+    "secure": false,
+    "pathRewrite": { "^/health/faturamento": "/health" }
+  }
+}

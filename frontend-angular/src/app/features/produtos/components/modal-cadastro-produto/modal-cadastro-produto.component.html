@@ -1,0 +1,88 @@
+<div class="modal-overlay" (click)="fechar.emit()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal__header">
+      <h2>Novo Produto</h2>
+      <button class="btn btn--ghost btn--icon" (click)="fechar.emit()">
+        ✕
+      </button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="modal__body">
+        @if (erro) {
+          <div class="error-box">{{ erro }}</div>
+        }
+
+        <div class="flex gap-2" style="align-items: flex-end">
+          <!-- Código -->
+          <div class="form-group" style="flex: 1">
+            <label for="codigo">Código</label>
+            <input
+              id="codigo"
+              class="input"
+              formControlName="codigo"
+              placeholder="00001"
+              maxlength="5"
+            />
+
+            @if (form.get("codigo")?.invalid && form.get("codigo")?.touched) {
+              <span class="error-msg">
+                Código deve conter exatamente 5 números.
+              </span>
+            }
+          </div>
+
+          <!-- Descrição -->
+          <div class="form-group" style="flex: 2">
+            <label for="descricao">Descrição</label>
+            <input
+              id="descricao"
+              class="input"
+              formControlName="descricao"
+              placeholder="Descrição"
+              maxlength="30"
+            />
+
+            @if (
+              form.get("descricao")?.invalid && form.get("descricao")?.touched
+            ) {
+              <span class="error-msg"> Descrição inválida. </span>
+            }
+          </div>
+
+          <!-- Saldo -->
+          <div class="form-group" style="flex: 1">
+            <label for="saldoInicial">Saldo</label>
+            <input
+              id="saldoInicial"
+              class="input"
+              type="number"
+              formControlName="saldoInicial"
+              min="0"
+              placeholder="0"
+              value="0"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="modal__footer">
+        <button
+          type="button"
+          class="btn btn--secondary"
+          (click)="fechar.emit()"
+        >
+          Cancelar
+        </button>
+
+        <button
+          type="submit"
+          class="btn btn--primary"
+          [disabled]="form.invalid || salvando"
+        >
+          Salvar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

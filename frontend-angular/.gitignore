@@ -1,0 +1,39 @@
+# Dependências
+node_modules/
+
+# Build
+dist/
+.angular/
+
+# Ambientes (não versionar configs de produção)
+src/environments/environment.prod.ts
+
+# Cache
+.cache/
+.npm/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Testes
+coverage/
+
+# Variáveis de ambiente
+.env
+.env.local
+
+# VS Code (manter extensions.json se quiser compartilhar recomendações)
+.vscode/*
+!.vscode/extensions.json
+
+# Rider
+.idea/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db

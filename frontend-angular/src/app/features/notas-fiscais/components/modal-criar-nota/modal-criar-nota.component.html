@@ -1,0 +1,141 @@
+<div class="modal-overlay" (click)="fechar()">
+  <div class="modal modal--lg" (click)="$event.stopPropagation()">
+    <div class="modal__header">
+      <h2>Nova Nota Fiscal</h2>
+      <button class="btn btn--ghost btn--icon" (click)="fechar()">✕</button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="modal__body">
+        @if (erro()) {
+          <div class="error-box">{{ erro() }}</div>
+        }
+
+        <div
+          class="flex justify-between items-center"
+          style="margin-bottom: 12px"
+        >
+          <h3>Itens</h3>
+          <button
+            type="button"
+            class="btn btn--secondary btn--sm"
+            (click)="adicionarItem()"
+          >
+            + Item
+          </button>
+        </div>
+
+        @if (itens.length === 0) {
+          <p class="text-muted text-sm">Adicione ao menos um item.</p>
+        }
+
+        @for (item of itens.controls; track $index; let i = $index) {
+          <div class="item-row" [formGroup]="getItemGroup(i)">
+            <!-- Produto -->
+            <div class="form-group" style="flex: 1">
+              @if (i === 0) {
+                <label>Produto</label>
+              }
+
+              <select class="input" formControlName="produtoId">
+                <option value="">Selecione...</option>
+                @for (p of produtos(); track p.id) {
+                  <option [value]="p.id">
+                    {{ p.codigo }} — {{ p.descricao }}
+                  </option>
+                }
+              </select>
+            </div>
+
+            <!-- Disponível -->
+            <div class="form-group" style="width: 130px">
+              @if (i === 0) {
+                <label>Disponível</label>
+              }
+
+              <input
+                class="input"
+                type="text"
+                [value]="getProdutoSelecionado(i)?.saldo || 0"
+                disabled
+              />
+            </div>
+
+            <!-- Quantidade -->
+            <div class="form-group" style="width: 130px">
+              @if (i === 0) {
+                <label>Quantidade</label>
+              }
+
+              <input
+                class="input"
+                type="number"
+                formControlName="quantidade"
+                min="1"
+                step="1"
+                value="0"
+                placeholder="0"
+                [max]="getProdutoSelecionado(i)?.saldo || 0"
+                [disabled]="!getProdutoSelecionado(i)"
+              />
+
+              @if (
+                getItemGroup(i).get("quantidade")?.hasError("saldoExcedido") &&
+                getItemGroup(i).get("quantidade")?.touched
+              ) {
+                <span class="error-msg">
+                  Quantidade maior que o saldo disponível
+                </span>
+              }
+            </div>
+
+            <!-- Remover -->
+            <div [style.margin-top]="i === 0 ? '22px' : '0'">
+              <button
+                type="button"
+                class="btn btn--ghost btn--icon"
+                (click)="removerItem(i)"
+                title="Remover"
+              >
+                <svg
+                  xmlns="http://w3.org"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M3 6h18"></path>
+                  <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                  <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                  <line x1="10" y1="11" x2="10" y2="17"></line>
+                  <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="modal__footer">
+        <button type="button" class="btn btn--secondary" (click)="fechar()">
+          Cancelar
+        </button>
+
+        <button
+          type="submit"
+          class="btn btn--primary"
+          [disabled]="form.invalid || itens.length === 0 || salvando()"
+        >
+          @if (salvando()) {
+            <span class="spinner"></span>
+          }
+          Criar Nota
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

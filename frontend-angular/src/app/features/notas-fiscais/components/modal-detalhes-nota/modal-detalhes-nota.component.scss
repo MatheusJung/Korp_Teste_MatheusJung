@@ -1,0 +1,89 @@
+.header-inline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  h2 {
+    margin: 0;
+  }
+}
+
+/* GRID INFO */
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-2);
+
+  .label {
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    text-transform: uppercase;
+  }
+}
+
+.detail-item.full {
+  grid-column: 1 / -1;
+}
+
+.text-danger {
+  color: var(--color-danger);
+}
+
+/* ITENS */
+.items-section {
+  h3 {
+    margin-bottom: 10px;
+  }
+}
+
+.table--clean {
+  width: 100%;
+  border-collapse: collapse;
+
+  thead {
+    background: var(--color-surface-2);
+
+    th {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      padding: 10px 14px;
+      text-align: left;
+    }
+  }
+
+  tbody {
+    tr {
+      border-top: 1px solid var(--color-border);
+    }
+
+    td {
+      padding: 12px 14px;
+    }
+  }
+}
+
+.text-right {
+  text-align: right;
+}
+
+.col-quantidade {
+  width: 120px; // largura fixa
+  text-align: center; // alinha número
+}

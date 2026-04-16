@@ -1,0 +1,99 @@
+<div class="modal-overlay" (click)="fechar()">
+  <div class="modal modal--lg" (click)="$event.stopPropagation()">
+    <!-- HEADER -->
+    <div class="modal__header header-inline">
+      <div class="header-left">
+        <h2>Nota #{{ nota().numero }}</h2>
+
+        <span
+          class="badge"
+          [class]="'badge badge--' + nota().status.toLowerCase()"
+        >
+          {{ nota().status }}
+        </span>
+      </div>
+
+      <button class="btn btn--ghost btn--icon" (click)="fechar()">✕</button>
+    </div>
+
+    <!-- BODY -->
+    <div class="modal__body">
+      @if (erro()) {
+        <div class="error-box">{{ erro() }}</div>
+      }
+
+      <!-- INFO -->
+      <div class="detail-grid">
+        <div class="detail-item">
+          <span class="label">Emitida em</span>
+          <strong>{{ nota().criadoEm | date: "dd/MM/yyyy HH:mm" }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span class="label">Atualizada</span>
+          <strong>{{ nota().atualizadoEm | date: "dd/MM/yyyy HH:mm" }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span class="label">Itens</span>
+          <strong>{{ nota().itens.length }}</strong>
+        </div>
+
+        @if (nota().motivoCancelamento) {
+          <div class="detail-item full">
+            <span class="label">Motivo do cancelamento</span>
+            <span class="text-danger">
+              {{ nota().motivoCancelamento }}
+            </span>
+          </div>
+        }
+      </div>
+
+      <!-- LISTA -->
+      <div class="items-section">
+        <h3>Itens</h3>
+
+        <table class="table table--clean">
+          <thead>
+            <tr>
+              <th>Produto</th>
+              <th class="col-quantidade">Quantidade</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (item of nota().itens; track item.id) {
+              <tr>
+                <td class="text-mono text-sm">
+                  {{ nomeProduto(item.produtoId) }}
+                </td>
+
+                <td class="col-quantidade">
+                  {{ item.quantidade | number: "1.0-0" }}
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="modal__footer">
+      <button class="btn btn--secondary" (click)="fechar()">Fechar</button>
+
+      @if (nota().status === "Aberta") {
+        <button
+          class="btn btn--primary"
+          (click)="imprimir()"
+          [disabled]="imprimindo()"
+        >
+          @if (imprimindo()) {
+            <span class="spinner"></span>
+          }
+          Imprimir
+        </button>
+      }
+    </div>
+  </div>
+</div>

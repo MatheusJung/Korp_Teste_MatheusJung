@@ -1,0 +1,80 @@
+<div class="modal-overlay" (click)="fechar()">
+  <div class="modal modal--lg" (click)="$event.stopPropagation()">
+    <div class="modal__header">
+      <div class="modal__header-info">
+        <h2>Histórico</h2>
+
+        <div class="modal__subtitle">
+          <span><strong>Código:</strong> {{ produto?.codigo }}</span>
+          <span
+            ><strong> Saldo atual:</strong>
+            {{ produto?.saldo | number: "1.0-2" }}</span
+          >
+        </div>
+      </div>
+
+      <button class="btn btn--ghost btn--icon" (click)="fechar()">✕</button>
+    </div>
+
+    <div class="modal__body">
+      <!-- 🔄 LOADING -->
+      @if (carregando) {
+        <div class="loading">
+          <div class="spinner"></div>
+          <span>Carregando histórico...</span>
+        </div>
+
+        <!-- 📭 SEM DADOS -->
+      } @else if (movimentacoes.length === 0) {
+        <div class="empty-state">Sem movimentações.</div>
+
+        <!-- 📊 TABELA -->
+      } @else {
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Tipo</th>
+              <th class="text-right">Qtd</th>
+              <th class="text-right">Saldo Ant.</th>
+              <th class="text-right">Saldo Result.</th>
+              <th>Data</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (m of movimentacoes; track m.id) {
+              <tr>
+                <td>
+                  @if (m.tipo == "0") {
+                    <span class="badge badge--info">Criação</span>
+                  } @else if (m.tipo == "1") {
+                    <span class="badge badge--fechada">Entrada</span>
+                  } @else if (m.tipo == "2") {
+                    <span class="badge badge--cancelada">Saída</span>
+                  } @else {
+                    <span></span>
+                  }
+                </td>
+
+                <td class="text-right text-mono">
+                  {{ m.quantidade | number: "1.0-2" }}
+                </td>
+
+                <td class="text-right text-mono text-muted">
+                  {{ m.saldoAnterior | number: "1.0-2" }}
+                </td>
+
+                <td class="text-right text-mono">
+                  {{ m.saldoResultante | number: "1.0-2" }}
+                </td>
+
+                <td class="text-muted text-sm">
+                  {{ m.ocorridoEm | date: "dd/MM/yy HH:mm" }}
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+  </div>
+</div>
