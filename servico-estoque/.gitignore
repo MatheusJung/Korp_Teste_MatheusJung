@@ -1,0 +1,47 @@
+# Build
+bin/
+obj/
+out/
+publish/
+
+# Visual Studio
+*.user
+*.suo
+.vs/
+*.userosscache
+*.sln.docstates
+*.DotSettings.user
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+artifacts/
+
+# Banco de dados local
+*.mdf
+*.ldf
+*.ndf
+
+# Logs
+*.log
+logs/
+
+# Variáveis de ambiente
+.env
+.env.local
+appsettings.Production.json
+
+# Docker override
+docker-compose.override.yml
+
+# Rider / VS Code
+.idea/
+.vscode/
+
+# Cobertura de testes
+coverage/
+*.coverage
+*.coveragexml
+TestResults/
