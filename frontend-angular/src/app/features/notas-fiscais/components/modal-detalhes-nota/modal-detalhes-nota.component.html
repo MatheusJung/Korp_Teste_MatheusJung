@@ -82,7 +82,7 @@
     <div class="modal__footer">
       <button class="btn btn--secondary" (click)="fechar()">Fechar</button>
 
-      @if (nota().status === "Aberta") {
+      @if (nota().status === "Aberta" && health().faturamento === "ok") {
         <button
           class="btn btn--primary"
           (click)="imprimir()"

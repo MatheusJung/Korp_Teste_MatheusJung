@@ -51,9 +51,29 @@ export class ProdutoService {
       httpParams = httpParams.set("sortDirection", params.sortDirection);
     }
 
-    return this.http.get<PagedResult<Produto>>(`${this.base}/paginado`, {
-      params: httpParams,
-    });
+    const cacheKey = this.getCacheKey(params);
+
+    return this.http
+      .get<PagedResult<Produto>>(`${this.base}/paginado`, {
+        params: httpParams,
+      })
+      .pipe(
+        tap((res) => localStorage.setItem(cacheKey, JSON.stringify(res))),
+        catchError(() => {
+          const raw = localStorage.getItem(cacheKey);
+          return of(
+            raw
+              ? (JSON.parse(raw) as PagedResult<Produto>)
+              : {
+                  items: [],
+                  page: params?.page ?? 1,
+                  pageSize: params?.pageSize ?? 10,
+                  totalItems: 0,
+                  totalPages: 1,
+                },
+          );
+        }),
+      );
   }
 
   obter(id: string): Observable<Produto> {
@@ -78,6 +98,16 @@ export class ProdutoService {
       .pipe(tap(() => this.invalidarCache()));
   }
 
+  private getCacheKey(params?: ListarParams): string {
+    return `produtos_cache_${JSON.stringify({
+      page: params?.page ?? 1,
+      pageSize: params?.pageSize ?? 10,
+      search: params?.search ?? "",
+      sortBy: params?.sortBy ?? "",
+      sortDirection: params?.sortDirection ?? "asc",
+    })}`;
+  }
+
   private salvarCache(produtos: Produto[]) {
     localStorage.setItem(CACHE_KEY, JSON.stringify(produtos));
   }
@@ -88,6 +118,8 @@ export class ProdutoService {
   }
 
   private invalidarCache() {
-    localStorage.removeItem(CACHE_KEY);
+    Object.keys(localStorage)
+      .filter((key) => key.startsWith("produtos_cache"))
+      .forEach((key) => localStorage.removeItem(key));
   }
 }

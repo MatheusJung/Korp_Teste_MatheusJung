@@ -24,12 +24,6 @@
               placeholder="00001"
               maxlength="5"
             />
-
-            @if (form.get("codigo")?.invalid && form.get("codigo")?.touched) {
-              <span class="error-msg">
-                Código deve conter exatamente 5 números.
-              </span>
-            }
           </div>
 
           <!-- Descrição -->
@@ -42,12 +36,6 @@
               placeholder="Descrição"
               maxlength="30"
             />
-
-            @if (
-              form.get("descricao")?.invalid && form.get("descricao")?.touched
-            ) {
-              <span class="error-msg"> Descrição inválida. </span>
-            }
           </div>
 
           <!-- Saldo -->
@@ -67,6 +55,14 @@
       </div>
 
       <div class="modal__footer">
+        @if (form.get("codigo")?.invalid && form.get("codigo")?.touched) {
+          <span class="error-msg">
+            Código deve conter exatamente 5 números.
+          </span>
+        }
+        @if (form.get("descricao")?.invalid && form.get("descricao")?.touched) {
+          <span class="error-msg"> Descrição inválida. </span>
+        }
         <button
           type="button"
           class="btn btn--secondary"

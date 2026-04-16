@@ -129,6 +129,12 @@
             <td class="acoes-cell">
               <button
                 class="btn btn--secondary btn--sm"
+                [disabled]="health().estoque !== 'ok'"
+                [title]="
+                  health().estoque !== 'ok'
+                    ? 'Serviço de estoque indisponível'
+                    : ''
+                "
                 (click)="abrirMovimentacoes(p)"
               >
                 Histórico

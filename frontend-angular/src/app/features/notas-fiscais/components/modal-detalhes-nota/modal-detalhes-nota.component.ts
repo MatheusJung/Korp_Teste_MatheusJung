@@ -12,6 +12,7 @@ import { ProdutoService } from "../../../../core/services/produto.service";
 import { NotaFiscalService } from "../../../../core/services/nota-fiscal.service";
 import { Produto } from "../../../../core/models/models";
 import { finalize } from "rxjs";
+import { HealthService } from "../../../../core/services/health.service";
 
 @Component({
   selector: "app-modal-detalhes-nota",
@@ -23,6 +24,9 @@ import { finalize } from "rxjs";
 export class ModalDetalhesNotaComponent implements OnInit {
   private readonly produtoSvc = inject(ProdutoService);
   private readonly notaSvc = inject(NotaFiscalService);
+
+  private readonly healthService = inject(HealthService);
+  readonly health = this.healthService.health;
 
   // Input obrigatório — nota a exibir
   readonly nota = input.required<NotaFiscal>();
