@@ -214,7 +214,15 @@ func (h *NotaFiscalHandler) ObterPDF(c *gin.Context) {
 		return
 	}
 
-	pdfBytes, nomeArquivo, err := h.pdfStorage.Obter(c.Request.Context(), id)
+	//BUSCA A NOTA PRIMEIRO
+	nota, err := h.obter.Executar(c.Request.Context(), id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"erro": "nota não encontrada"})
+		return
+	}
+
+	//AGORA USA O NUMERO
+	pdfBytes, nomeArquivo, err := h.pdfStorage.Obter(c.Request.Context(), nota.ID, nota.Numero)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"erro": err.Error()})
 		return

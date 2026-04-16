@@ -20,8 +20,8 @@ type NotaPDFService interface {
 }
 
 type NotaPDFStorage interface {
-	Salvar(ctx context.Context, notaID uuid.UUID, numero int64, arquivo []byte) error
-	Obter(ctx context.Context, notaID uuid.UUID) ([]byte, string, error)
+	Salvar(ctx context.Context, notaID uuid.UUID, numero int64, conteudo []byte) error
+	Obter(ctx context.Context, notaID uuid.UUID, numero int64) ([]byte, string, error)
 }
 
 type NotaFiscalRepository interface {
