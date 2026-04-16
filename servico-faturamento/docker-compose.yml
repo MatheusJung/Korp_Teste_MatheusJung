@@ -1,0 +1,52 @@
+services:
+  faturamento-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: faturamento-api
+    ports:
+      - "${API_PORT}:8080"
+    environment:
+      DATABASE_URL: "postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable"
+      ESTOQUE_URL: "${ESTOQUE_URL}"
+      PORT: "8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - notafiscal-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: faturamento-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - notafiscal-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  postgres-data:
+
+networks:
+  notafiscal-network:
+    external: true
+    name: notafiscal-network

@@ -1,0 +1,34 @@
+# Binário compilado
+faturamento
+/dist
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+vendor/
+go.sum
+
+# Swagger gerado automaticamente (recriar com: swag init -g cmd/api/main.go -o docs)
+docs/swagger.json
+docs/swagger.yaml
+docs/docs.go
+
+# Variáveis de ambiente
+.env
+.env.local
+
+# Docker override
+docker-compose.override.yml
+
+# Rider / VS Code
+.idea/
+.vscode/
+
+# Logs
+*.log
+logs/
